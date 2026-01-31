@@ -16,7 +16,10 @@ _一站式零售库存解决方案，为您的商店量身定制_
 
 IOE是一个基于Django开发的**综合性库存管理系统**，专为零售商店、小型仓库和商品销售场所设计。系统提供了完整的商品管理、库存跟踪、销售记录、会员管理和数据分析功能，帮助企业高效管理库存和销售流程。
 
-<!-- 内容分隔线 -->
+<div align="center">
+  <b>📱 扫描二维码添加我的微信，加入分享群，获取技术支持与分享经验</b><br/><br/>
+  <img src="./asset/wxqun.png" width="30%" />
+</div>
 
 ## ✨ 主要功能模块
 
@@ -78,6 +81,7 @@ IOE是一个基于Django开发的**综合性库存管理系统**，专为零售�
 | 📊 数据可视化 | 丰富的报表和图表，直观展示业务数据 |
 | 🔒 安全可靠 | 完善的权限控制和操作日志，保障数据安全 |
 | 🔌 灵活扩展 | 模块化设计，易于扩展新功能 |
+| 👥 社区支持 | 活跃的用户交流群，分享经验和解决问题 |
 
 ## 🚀 快速开始
 
@@ -87,9 +91,15 @@ IOE是一个基于Django开发的**综合性库存管理系统**，专为零售�
 pip install -r requirements.txt
 ```
 
-### 建库、配置到settings.py中，初始化数据库
+### 数据库配置与初始化
 
 ```bash
+# 1. 创建数据库（以MySQL为例）
+CREATE DATABASE ioe CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+# 2. 修改项目配置文件中的数据库设置（project/settings.py）
+
+# 3. 执行数据库迁移
 python manage.py migrate
 ```
 
@@ -111,42 +121,77 @@ python manage.py runserver
 
 ### Docker部署
 
-有关Docker部署的详细说明，请参阅[Docker部署指南](README.docker.md)
+对于生产环境，推荐使用Docker部署，详细说明请参阅[Docker部署指南](README.docker.md)
 
 ## 📸 系统截图
 
 <div align="center">
-  <img src="./asset/report_center.png" width="100%" /><br/><br/>
-  <img src="./asset/create_sale.png" width="100%" /><br/><br/>
-  <img src="./asset/sale_record.png" width="100%" /><br/><br/>
-  <img src="./asset/category_list.png" width="100%" /><br/><br/>
-  <img src="./asset/stock_list.png" width="100%" /><br/><br/>
-  <img src="./asset/stock_check.png" width="100%" /><br/><br/>
-  <img src="./asset/product_list.png" width="100%" /><br/><br/>
-  <img src="./asset/member_mgmt.png" width="100%" />
+  <img src="./asset/开始盘点.png" width="100%" /><br/><br/>
+  <img src="./asset/报表中心.png" width="100%" /><br/><br/>
+  <img src="./asset/会员等级管理.png" width="100%" /><br/><br/>
+  <img src="./asset/会员管理.png" width="100%" /><br/><br/>
+  <img src="./asset/商品分类列表.png" width="100%" /><br/><br/>
+  <img src="./asset/导入会员.png" width="100%" /><br/><br/>
+  <img src="./asset/库存列表.png" width="100%" /><br/><br/>
+  <img src="./asset/库存盘点.png" width="100%" /><br/><br/>
+  <img src="./asset/收银台-添加商品.png" width="100%" /><br/><br/>
+  <img src="./asset/添加会员.png" width="100%" /><br/><br/>
+  <img src="./asset/销售记录.png" width="100%" /><br/><br/>
+  <img src="./asset/main_page.png" width="100%" /><br/><br/>
 </div>
 
-## 📄 License
+## 💬 社区交流与支持
 
-本项目采用 MIT License
+<div align="center">
+  <b>扫描下方二维码加入用户交流群</b><br/>
+  <p>分享使用经验、获取最新更新、寻求技术支持</p>
+  <img src="./asset/wxqun.png" width="30%" />
+</div>
 
-## ☕ Buy Me a Coffee
-如果你觉得这个项目对你有帮助，你可以通过以下方式支持：
+## 🤝 贡献指南
+
+欢迎为IOE项目做出贡献！您可以通过以下方式参与：
+
+1. 提交Bug或功能建议：通过GitHub Issues
+2. 提交代码：Fork项目，创建Pull Request
+3. 完善文档：改进使用手册和开发文档
+4. 分享使用经验：在交流群中与其他用户分享
+
+## 📄 许可证
+
+本项目采用 [MIT License](LICENSE)
+
+## ☕ 支持项目
+
+如果您觉得这个项目对您有帮助，可以通过以下方式支持我们继续开发和维护：
 
 <div align="center">
   <img src="./asset/buyme.jpg" width="30%" /> &nbsp;&nbsp;&nbsp; <img src="./asset/wechat.jpg" width="30%" />
 </div>
 
+<div align="center">
+  <h3>🙏 特别鸣谢</h3>
+  <p>感谢以下用户对本项目的支持：</p>
+  <p>
+    "挨踢大哥" &nbsp;|&nbsp; "桂教助考网"
+  </p>
+</div>
 
-## 📞 联系我们
+## 📞 联系方式
 
-如有问题，建议，或定制化需求，欢迎通过以下方式联系：
-
-- 项目问题: [提交Issue](https://github.com/zhtyyx/ioe/issues)
-- 邮箱: zhtyyx@gmail.com
+<div align="center">
+  <p><b>有问题？建议？或定制化需求？</b></p>
+  <p>通过以下方式联系我们：</p>
+  <p>
+    📧 邮箱：<a href="mailto:zhtyyx@gmail.com">zhtyyx@gmail.com</a><br/>
+    🐞 问题反馈：<a href="https://github.com/zhtyyx/ioe/issues">GitHub Issues</a><br/>
+    💬 交流群：<a href="#社区交流与支持">扫描上方二维码</a>
+  </p>
+</div>
 
 ---
 
 <div align="center">
-  软件著作权已登记，如有疑问请联系我。  
+  软件著作权已登记，如有疑问请联系我们。<br/>
+  Copyright © 2025-2026 IOE Team. All Rights Reserved.
 </div>

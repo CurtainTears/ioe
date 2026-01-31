@@ -4,8 +4,10 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 
-from .models import Product, Inventory, OperationLog
-from .forms import ProductForm
+# 显式导入原始models
+import inventory.models
+from .models.common import OperationLog 
+from . import forms
 from .ali_barcode_service import AliBarcodeService
 
 @login_required
@@ -23,10 +25,10 @@ def barcode_product_create(request):
     if barcode:
         # 首先检查数据库中是否已存在该条码的商品
         try:
-            existing_product = Product.objects.get(barcode=barcode)
+            existing_product = inventory.models.Product.objects.get(barcode=barcode)
             messages.warning(request, f'条码 {barcode} 的商品已存在，请勿重复添加')
             return redirect('product_list')
-        except Product.DoesNotExist:
+        except inventory.models.Product.DoesNotExist:
             # 调用阿里云条码服务查询商品信息
             barcode_data = AliBarcodeService.search_barcode(barcode)
             
@@ -39,15 +41,15 @@ def barcode_product_create(request):
                     'manufacturer': barcode_data.get('manufacturer', ''),
                     'price': barcode_data.get('suggested_price', 0),
                     'cost': barcode_data.get('suggested_price', 0) * 0.8 if barcode_data.get('suggested_price') else 0,  # 默认成本价为建议售价的80%
-                    'description': barcode_data.get('description', '')
+                    'description': barcode_data.get('description', ''),
+                    'is_active': True  # 确保初始化时is_active为True
                 }
                 
                 # 尝试从数据库中查找匹配的商品类别
-                from .models import Category
                 category_name = barcode_data.get('category', '')
                 if category_name:
                     try:
-                        category = Category.objects.filter(name__icontains=category_name).first()
+                        category = inventory.models.Category.objects.filter(name__icontains=category_name).first()
                         if category:
                             initial_data['category'] = category.id
                     except Exception as e:
@@ -56,14 +58,16 @@ def barcode_product_create(request):
                 messages.success(request, '成功获取商品信息，请确认并完善商品详情')
             else:
                 messages.info(request, f'未找到条码 {barcode} 的商品信息，请手动填写')
-                initial_data = {'barcode': barcode}
+                initial_data = {'barcode': barcode, 'is_active': True}  # 确保初始化时is_active为True
     
     # 处理表单提交
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
+        form = forms.ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            # 保存商品信息
-            product = form.save()
+            # 确保is_active为True
+            product = form.save(commit=False)
+            product.is_active = True
+            product.save()
             
             # 创建初始库存记录
             initial_stock = request.POST.get('initial_stock', 0)
@@ -75,15 +79,15 @@ def barcode_product_create(request):
                 initial_stock = 0
                 
             # 检查是否已存在该商品的库存记录
-            inventory, created = Inventory.objects.get_or_create(
+            inventory_record, created = inventory.models.Inventory.objects.get_or_create(
                 product=product,
                 defaults={'quantity': initial_stock}
             )
             
             # 如果已存在库存记录，则更新数量
             if not created:
-                inventory.quantity += initial_stock
-                inventory.save()
+                inventory_record.quantity += initial_stock
+                inventory_record.save()
             
             # 记录操作日志
             OperationLog.objects.create(
@@ -91,14 +95,18 @@ def barcode_product_create(request):
                 operation_type='INVENTORY',
                 details=f'添加新商品: {product.name} (条码: {product.barcode}), 初始库存: {initial_stock}',
                 related_object_id=product.id,
-                related_content_type=ContentType.objects.get_for_model(Product)
+                related_content_type=ContentType.objects.get_for_model(product)
             )
             
             messages.success(request, '商品添加成功')
             return redirect('product_list')
     else:
-        form = ProductForm(initial=initial_data)
+        form = forms.ProductForm(initial=initial_data)
     
+    # 确保barcode_data不为None时为字典类型
+    if barcode_data is None:
+        barcode_data = {}
+        
     # 渲染模板
     return render(request, 'inventory/barcode_product_form.html', {
         'form': form,
@@ -118,7 +126,7 @@ def barcode_lookup(request):
         
     # 首先检查数据库中是否已存在该条码的商品
     try:
-        product = Product.objects.get(barcode=barcode)
+        product = inventory.models.Product.objects.get(barcode=barcode)
         return JsonResponse({
             'success': True,
             'exists': True,
@@ -130,7 +138,7 @@ def barcode_lookup(request):
             'description': product.description,
             'message': '商品已存在于系统中'
         })
-    except Product.DoesNotExist:
+    except inventory.models.Product.DoesNotExist:
         # 调用阿里云条码服务查询商品信息
         barcode_data = AliBarcodeService.search_barcode(barcode)
         
